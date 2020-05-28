@@ -1,1 +1,13 @@
-# AzureAutomation
+# Azure Automation
+
+Azure Automation is a serverless offering from Azure for instracture related process automation, for example: start/stop Virtual Machine VM.
+It is a useful capability to help optimise your cost in using Virtual Machine.
+With stopping a Virtual Machine, you can save the compute cost when the VM. 
+Based on a DS2 V2 in SoutEast Asia, it would cost $211.70 for compute. If your load is 2 days per month, you can save close to 90% of original cost.
+
+### Step by step guide Azure Automation Example:
+The guide is to help you setup an Azure Automation Powershell workflow workbook to:
+1. Start a Virtual Machine (that are already provisioned)
+2. Run a Python script inside the Virtual Machine
+3. Stop the Virtual Machine 
+
