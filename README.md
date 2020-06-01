@@ -40,3 +40,6 @@ The guide is to help you setup an Azure Automation Powershell workflow workbook 
 10. Go back to your runbook main page. (in my case my runbook is called "runscriptJob")
 11. You can trigger adhoc run by clicking "Play"
 12. Or you can go to "Schedule" blade  and add a schedule
+
+#### Notes related to the powershell workflow script
+1. the "-Name" that we put under "Set-AzVMCustomScriptExtension" is an identifier to the particular Custom Script Extension job we plan to send to the VM to perform. You can change to any other name you like, be sure to change it under "Get-AzVMDiagnosticsExtension" so that you can get the .py script stdout back
