@@ -1,0 +1,55 @@
+workflow runscriptJob
+{
+$ResourceGroupName = '<Your Resource Group Name>'
+$VMName = '<Your VM Name>'
+
+echo "Process Start"
+
+# Ensures that you do not inherit an AzContext in your runbook
+#Get the connection, subscription and remove any inheritance
+Disable-AzContextAutosave –Scope Process
+
+$Conn = Get-AutomationConnection -Name AzureRunAsConnection
+Connect-AzAccount -ServicePrincipal -Tenant $Conn.TenantID -ApplicationId $Conn.ApplicationID -CertificateThumbprint $Conn.CertificateThumbprint
+
+$AzureContext = Get-AzSubscription -SubscriptionId $Conn.SubscriptionID
+
+echo "==========================================" #Put some space hard to read log
+echo "1. Start VM"
+Start-AzVM -Name $VMName -ResourceGroupName $ResourceGroupName
+
+#Run Task in Azure VM 
+#The powershell script that will be deployed into the VM is saved in Storage Account 
+#In the powershell script RunPython.ps1, it is only call to run the python script inside the VM
+echo "==========================================" #Put some space hard to read log
+echo "run script"
+Set-AzVMCustomScriptExtension -ResourceGroupName $ResourceGroupName `
+    -VMName $VMName `
+    -Location 'Australia Central' `
+    -Name "DemoScriptExtension" `
+    -TypeHandlerVersion "1.1" -StorageAccountName "automationsademo" `
+    -StorageAccountKey "<Your Storage Account Key" `
+    -FileName "Runpython.ps1" -ContainerName "customscripts"
+
+
+echo "==========================================" #Put some space hard to read log
+echo "2. get script output"
+$Result = InlineScript
+{
+    $Status = Get-AzVMDiagnosticsExtension -ResourceGroupName $using:ResourceGroupName -VMName $using:VMName -name "DemoScriptExtension" -status
+    $stdout = $Status.SubStatuses[0].Message
+    $stderr = $Status.SubStatuses[1].Message
+    $Output ="StdOut from python script: $stdout  `nStdErr from python script: $stderr" #`n mean new line
+    $Output
+}
+echo $Result
+
+
+echo "==========================================" #Put some space hard to read log
+echo "3. Stop VM"
+Stop-AzVM -Name $VmName -ResourceGroupName $ResourceGroupName -Confirm:$false -Force
+
+echo "==========================================" #Put some space hard to read log
+echo "Process End"
+
+}
