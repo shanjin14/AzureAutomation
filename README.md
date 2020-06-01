@@ -20,8 +20,8 @@ The guide is to help you setup an Azure Automation Powershell workflow workbook 
 #### Preparation
 1. RDP into the virtual machine and put your .py file in the folder
 2. Modify the RunPython.ps1 to point to the right path and filename. If you faced any error that ".python is not recognizable". you may probably faced the issue that the python is not registered in the environment path.
-  a. here is the link to add python to environment path: [Link here] (https://geek-university.com/python/add-python-to-the-windows-path/)
-  b. if you are using anaconda, can refer here to find your python executable path: [Link here] (https://stackoverflow.com/questions/37117571/where-does-anaconda-python-install-on-windows#:~:text=To%20find%20where%20Anaconda%20was,the%20command%20line%20in%20Windows.&text=You%20can%20search%20for%20%22Anaconda,anaconda2%20is%20my%20installed%20directory.)
+  a. here is the link to add python to environment path: [Link here](https://geek-university.com/python/add-python-to-the-windows-path/)
+  b. if you are using anaconda, can refer here to find your python executable path: [Link here](https://stackoverflow.com/questions/37117571/where-does-anaconda-python-install-on-windows#:~:text=To%20find%20where%20Anaconda%20was,the%20command%20line%20in%20Windows.&text=You%20can%20search%20for%20%22Anaconda,anaconda2%20is%20my%20installed%20directory.)
 
 3. You would need to upload the "RunPython.ps1" into a storage account (it's called automationdemo in the powershell workflow) and container name (it's called customcripts in the powershell workflow)
 
