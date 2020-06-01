@@ -26,7 +26,7 @@ The guide is to help you setup an Azure Automation Powershell workflow workbook 
 3. You would need to upload the "RunPython.ps1" into a storage account (it's called automationdemo in the powershell workflow) and container name (it's called customcripts in the powershell workflow)
 
 
-#### steps
+#### Steps
 1. Go to your Automation Account
 2. Go to Runbooks
 3. Click create runbook. 
