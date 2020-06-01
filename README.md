@@ -6,9 +6,10 @@ With stopping a Virtual Machine, you can save the compute cost when the VM.
 Based on a DS2 V2 in SoutEast Asia, it would cost $211.70 for compute. If your work load is 2 days per month, you can save close to 90% of original cost.
 
 ### Azure Automation Example:
-The guide is to help you setup an Azure Automation Powershell workflow workbook to:
+The guide is to help you setup a sample Azure Automation Powershell workflow workbook to:
 1. Start a Virtual Machine (that are already provisioned)
 2. Run a Python script inside the Virtual Machine
+3. Get the Python script stdout and stderr output back and print it in Azure Automation
 3. Stop the Virtual Machine 
 
 ### Requirement
