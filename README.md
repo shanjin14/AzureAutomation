@@ -32,7 +32,7 @@ The guide is to help you setup a sample Azure Automation Powershell workflow wor
 2. Go to Runbooks
 3. Click create runbook. 
 4. Enter the runbook name and select powershell workflow as the runbook type
-5. Copy paste the script from this repo into the runbook
+5. Copy paste the script (the .txt file) from this repo into the runbook
 6. Add in your ResourceGroupName,VMName
 7. Add in location, name, Storage account name, storage account key, container name
  * If you change the "RunPython.ps1" name. Please change it accordinlgy
