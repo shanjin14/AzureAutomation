@@ -51,5 +51,5 @@ The guide is to help you setup a sample Azure Automation Powershell workflow wor
 I put the files under the "Script_2" Folder
 
 #### Useful resource for Orchestrator API
-https://docs.uipath.com/automation-cloud/docs/about-api-access
-https://postman.uipath.rocks/?version=latest
+1. https://docs.uipath.com/automation-cloud/docs/about-api-access
+2. https://postman.uipath.rocks/?version=latest
