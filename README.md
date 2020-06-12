@@ -44,3 +44,10 @@ The guide is to help you setup a sample Azure Automation Powershell workflow wor
 
 #### Notes related to the powershell workflow script
 1. the "-Name" that we put under "Set-AzVMCustomScriptExtension" is an identifier to the particular Custom Script Extension job we plan to send to the VM to perform. You can change to any other name you like, be sure to change it under "Get-AzVMDiagnosticsExtension" so that you can get the .py script stdout back
+    a. * One VM is only allowed one Custom Script Extension. If you already provision one (in my case, demoScriptExtension). The VM will throw error if you create another with different name. However one Extension cann run multiple different scripts.
+    b. ** For some reason, custom script extension is not responding. The default timeout is 1.5 hours. if you accidentally sent 5 extension request during testing, you would need to wait 5 * 1.5 hours before Azure VM respond back to you.
+ 
+### Azure Automation Example -- #2 
+I put the files under the "Script_2" Folder
+
+
