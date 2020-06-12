@@ -1,0 +1,95 @@
+workflow UiPathRobotJob
+{
+
+$ResourceGroupName = '<Your Resource Group Name>'
+
+
+echo "==========================================" #Put some space hard to read log
+echo "Process Start"
+
+# Ensures that you do not inherit an AzContext in your runbook
+#Get the connection, subscription and remove any inheritance
+Disable-AzContextAutosave –Scope Process
+
+$Conn = Get-AutomationConnection -Name AzureRunAsConnection
+Connect-AzAccount -ServicePrincipal -Tenant $Conn.TenantID -ApplicationId $Conn.ApplicationID -CertificateThumbprint $Conn.CertificateThumbprint
+
+$AzureContext = Get-AzSubscription -SubscriptionId $Conn.SubscriptionID
+
+echo "==========================================" #Put some space hard to read log
+echo "Read robot status from UiPath Orchestrator API"
+
+
+##UiPath related parameter
+$clientId ="<Client Id from Orchestrator"
+$tenantName = "<Tenant Name from Orchestrator>"
+$userkey= "<User Key from Orchestrator>"
+
+$json = “{
+    ""grant_type"": ""refresh_token"",
+    ""client_id"": ""$clientId"",
+    ""refresh_token"": ""$userkey""
+}"
+
+
+# refresh the token
+$out = Invoke-WebRequest “https://account.uipath.com/oauth/token” -Method Post -Body $json -ContentType “application/json” -Header @{"X-UIPATH-TenantName" = "$tenantName"} -UseBasicParsing
+$token = $out | ConvertFrom-Json
+$bearerToken = $token.access_token
+
+#Create header for GET request
+$header = @{"X-UIPATH-TenantName" = "$tenantName";"authorization" = "Bearer $bearerToken";"Content-Type" = "application/json"}
+
+
+#Make second API call to get robot status
+$Url = "https://cloud.uipath.com/<TenantName>/<FolderName>/OData/Sessions"
+$Result = Invoke-restmethod -Method "GET" -Uri $url -Headers $header -UseBasicParsing
+$values = $Result.value
+
+
+echo "==========================================" #Put some space hard to read log
+echo "For each robot ID, check if it's on-prem machine or Azure VM and proceed to start it if it's disconnected"
+foreach ($value in $values) {
+$robotId = $value.MachineName
+$robotState = $value.State
+$robotResponsive = $value.IsUnresponsive #true mean not responding, False mean all good
+echo "Robot is $robotId and state is $robotState and IsReponsive is $robotResponsive"
+$output = InlineScript {
+$robotId = $using:robotId
+
+    $VM = Get-AzVM -ResourceGroupName $using:ResourceGroupName -Name $robotId -ErrorVariable ex -ErrorAction SilentlyContinue
+
+if (!$ex[0].Exception.Message) {
+     $output = "Found"
+}
+else
+{   
+     $output = "NotFound"
+}
+    $output
+}
+
+echo "$robotId is $output as Azure VM"
+
+if ($output -eq "Found" -and ($robotResponsive -eq $True -or $robotState -eq "Disconnected")) #if the robot found to be Azure VM and it is not responding
+{
+echo "==========================================" #Put some space hard to read log
+echo "Start VM"
+Start-AzVM -Name $robotId -ResourceGroupName $ResourceGroupName
+
+echo "==========================================" #Put some space hard to read log
+echo "Start UiPath connection"
+Set-AzVMCustomScriptExtension -ResourceGroupName $ResourceGroupName `
+    -VMName $robotId `
+    -Location 'Australia Central' `
+    -Name "DemoScriptExtension" `
+    -TypeHandlerVersion "1.1" -StorageAccountName "automationsademo" `
+    -StorageAccountKey "<Your Storage Account Key>" `
+    -FileName "RunExecutable.ps1" -ContainerName "customscripts"
+}
+else
+{
+    echo "No Action required"
+}
+}
+}
