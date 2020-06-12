@@ -50,4 +50,6 @@ The guide is to help you setup a sample Azure Automation Powershell workflow wor
 ### Azure Automation Example -- #2 -- Automating RPA Robot Management
 I put the files under the "Script_2" Folder
 
-
+#### Useful resource for Orchestrator API
+https://docs.uipath.com/automation-cloud/docs/about-api-access
+https://postman.uipath.rocks/?version=latest
